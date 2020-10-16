@@ -1,25 +1,9 @@
-from django.shortcuts import render,redirect,HttpResponse
-from django.views.generic import ListView
-from .models import Vendor
-from .forms import VendorForm
-
-class VendorListView(ListView):
-    model = Vendor
-    template_name = 'vendor_list.html'
-
-def home(request):
-    return render(request,'vendor/home.html')
-def book(request):
-    return render(request,'vendor/book.html')
+from django.shortcuts import render
+from rest_framework import generics
+from vendor.models import Vendor
+from .serializers import VendorSerializer
 
 
-def vendor_view(request):
-    
-    if request.method == 'POST':
-        form = VendorForm(request.POST or None)
-        if form.is_valid():
-            form.save()
-            return redirect('book')
-    else:
-        form = VendorForm()
-    return render(request,'vendor/vendor.html',{'form':form})
+class VendorAPIView(generics.ListAPIView):
+    queryset = Vendor.objects.all()
+    serializer_class = VendorSerializer
